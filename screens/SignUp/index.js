@@ -1,13 +1,26 @@
 import { useState } from 'react';
 import { Button, View, Text, StyleSheet, TextInput } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const singUp = () => {
-
+  const signUp = () => {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log('SUCESSO DO MÉTODO SIGNUP', user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log('ERRO DO MÉTODO SIGNUP', errorMessage);
+      })
+      .finally(() => {
+        console.log('FINALLY DO MÉTODO SIGNUP');
+      })
   }
 
   return (
@@ -31,7 +44,7 @@ const SignUpScreen = ({ navigation }) => {
       </View>
       <Button
         title="Sign Up"
-        onPress={singUp}
+        onPress={signUp}
       />
     </View>
   );

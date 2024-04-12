@@ -2,16 +2,35 @@ import { useEffect, useState } from "react";
 import AuthNavigator from "./AuthNavigator";
 import NoAuthNavigator from "./NotAuthNavigator";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Splash from "../components/SplashScreen";
 
 const MainNavigator = () => {
-    const [isAuth, setIsAuth] = useState(false);
+    const [isAuth, setIsAuth] = useState();
+
+    useEffect(() => {
+        const auth = getAuth();
+        onAuthStateChanged(auth, 
+            (user) => {
+                if (user) {
+                    setIsAuth(true)
+                } else {
+                    setIsAuth(false)
+                }
+            }
+        );
+        // return deactivateListener()
+    }, [])
 
     // Adicionar o listener do firebase auth aqui
 
+    const Navigator = isAuth ?
+        AuthNavigator :
+        NoAuthNavigator
+
     return (
-            isAuth ?
-            <AuthNavigator /> :
-            <NoAuthNavigator />
+            isAuth === undefined ?
+                <Splash /> :
+                <Navigator />
     )
 }
 
