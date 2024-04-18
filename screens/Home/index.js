@@ -1,11 +1,11 @@
-import { Button, View, Text } from 'react-native';
+import { Button, View, Text, StyleSheet } from 'react-native';
 import { getAuth, signOut } from "firebase/auth";
 
 const HomeScreen = ({ navigation }) => {
   const auth = getAuth();
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text>
         Home
       </Text>
@@ -20,5 +20,14 @@ const HomeScreen = ({ navigation }) => {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'space-around',
+    backgroundColor: '#fdb',
+    alignItems: 'center',
+    flex: 1,
+  },
+})
 
 export default HomeScreen;

@@ -1,35 +1,46 @@
 import { Button, View, Text, TextInput, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getAuth, updateProfile } from 'firebase/auth';
+import { getDatabase, ref, onValue, set } from "firebase/database";
 
 const ProfileScreen = ({ navigation }) => {
-  const [newName, setNewName] = useState('');
+  const [name, setName] = useState('');
 
   const auth = getAuth();
+  const db = getDatabase();
   const user = auth.currentUser;
 
+  useEffect(() => {
+    // onValue(ref(db, '/users/' + user.uid), (snapshot) => {
+    //   const username = (snapshot.val() && snapshot.val().name) || '';
+    //   setName(username);
+    // }, {
+    //   onlyOnce: true
+    // })
+  }, [])
+
   const updateName = () => {
-    updateProfile(user, {
-      displayName: newName,
-    })
-      .then(() => {
-        console.log('SUCESSO')
-        setNewName('')
-      })
-      .catch((error) => {
-        console.log('ERRO', error)
-      });
-    }
+    // updateProfile(user, {
+    //   displayName: newName,
+    // })
+    //   .then(() => {
+    //     console.log('SUCESSO')
+    //     setNewName('')
+    //   })
+    //   .catch((error) => {
+    //     console.log('ERRO', error)
+    //   });
+  }
 
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          {`Seu nome é: ${user.displayName}, gostaria de trocar?`}
+          {'Gostaria de trocar de nome?'}
         </Text>
         <TextInput
           style={styles.input}
-          onChangeText={setNewName}
-          value={newName}
+          onChangeText={setName}
+          value={name}
           placeholder="Novo Nome"
         />
         <Button

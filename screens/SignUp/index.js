@@ -1,16 +1,31 @@
 import { useState } from 'react';
 import { Button, View, Text, StyleSheet, TextInput } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+
+  const filterNonNumeric = (text) => text.replace(/[^0-9]/g, '');
+
+  const createProfile = (userUid) => {
+    const db = getDatabase();
+    set(ref(db, 'users/' + userUid), {
+      username: name,
+      email: email,
+      age: age
+    });
+  }
 
   const signUp = () => {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        createProfile(user.uid);
         console.log('SUCESSO DO MÉTODO SIGNUP', user);
       })
       .catch((error) => {
@@ -40,6 +55,19 @@ const SignUpScreen = ({ navigation }) => {
           onChangeText={setPassword}
           value={password}
           placeholder="password"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={setName}
+          value={name}
+          placeholder="name"
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => setAge(filterNonNumeric(text))}
+          value={age}
+          placeholder="age"
+          maxLength={3}
         />
       </View>
       <Button
